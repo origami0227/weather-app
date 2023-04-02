@@ -39,20 +39,33 @@
 <script>
     //通过weather的一些网站拿到实时天气的API
     const apiKey = "5f638d5251239bca9e3cb3ee939e1e49"
-    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q=dublin"
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?&units=metric&q="
+    const searchBox = document.querySelector('.search input')
+    const searchButton = document.querySelector('.search button')
 
     //异步拿到天气数据
-    async function checkWeather() {
-        const response = await fetch(apiUrl + `&appid=${apiKey}`) //获取天气数据
+    async function checkWeather(city) {
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`) //获取天气数据
         let data = await response.json()
         console.log(data)
         document.querySelector('.city').innerHTML = data.name //将获取到数据的城市渲染到页面
-        document.querySelector('.temp').innerHTML = `${data.main.temp.toFixed(1)}°C` //保留一位小数
+        document.querySelector('.temp').innerHTML = `${data.main.temp.toFixed(0)}°C` //不保留小数点
         document.querySelector('.humidity').innerHTML = `${data.main.humidity}%`
         document.querySelector('.wind').innerHTML = `${data.wind.speed.toFixed(1)}km/h`
 
     }
-    checkWeather()
+
+    //添加时间监听，点击触发
+    searchButton.addEventListener('click', () => {
+        //需要获取到在input中拿到的city字段
+        checkWeather(searchBox.value)
+    })
+    searchBox.addEventListener('keyup',(e)=>{
+        e.preventDefault()
+        if(e.keyCode === 13){
+            searchButton.click()
+        }
+    })
 
 </script>
 </body>
